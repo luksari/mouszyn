@@ -55,10 +55,10 @@ export const Sparks = ({ count, mouse, colors, radius }: SparksProps) => {
   const lines = useMemo<Spark[]>(
     () =>
       Array.from({ length: count }).map((_, index) => {
-        const pos = new THREE.Vector3(Math.sin(0) * radius, Math.cos(0) * radius, 0);
+        const pos = new THREE.Vector3(Math.sin(0) * radius * r(), Math.cos(0) * radius * r(), 0);
         const points = Array.from({ length: 30 }).map((_, index) => {
-          const angle = (index / count) * Math.PI * 2;
-          return pos.add(new THREE.Vector3(Math.sin(angle) * radius * r(), Math.cos(angle) * radius * r(), 1)).clone();
+          const angle = (index / count) * Math.PI;
+          return pos.add(new THREE.Vector3(Math.sin(angle) * radius * r(), Math.cos(angle) * radius * r(), 0)).clone();
         });
         const curve = new THREE.CatmullRomCurve3(points).getPoints(1000);
         return {

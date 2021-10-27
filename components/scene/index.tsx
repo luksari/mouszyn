@@ -8,6 +8,8 @@ import { Particles } from '../particles';
 import { Sparks } from '../sparks';
 import classes from './scene.module.scss';
 import { Effects } from '../effects';
+import { OrbitControls } from '@react-three/drei';
+import { LavaPlane } from '../lavaPlane';
 
 const InteractiveText = () => {
   const [toggleVal, setToggleVal] = useState(0);
@@ -67,7 +69,8 @@ export const Scene = () => {
       <Particles count={1000} mouse={mouse} />
       <Sparks count={15} mouse={mouse} colors={['#ea7434', '#f6a50b', '	red']} radius={3} />
       <InteractiveText />
-      {/* <LavaPlane /> */}
+      <OrbitControls />
+      <LavaPlane />
     </Canvas>
   );
 };

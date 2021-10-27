@@ -135,7 +135,7 @@ export const LavaPlane = () => {
     const persistence = 0.7;
     const lacunarity = 1;
 
-    let amp = 1.3;
+    let amp = 1.6;
     let freq = 1;
 
     let value = 0;
