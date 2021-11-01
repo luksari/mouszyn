@@ -1,15 +1,13 @@
-import { useSpring } from '@react-spring/three';
+import { useSpring } from '@react-spring/core';
+import { Effects } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { TextMesh } from '../textMesh';
 import * as THREE from 'three';
-import { Light } from '../light';
-import { Particles } from '../particles';
-import { Sparks } from '../sparks';
-import classes from './scene.module.scss';
-import { Effects } from '../effects';
-import { OrbitControls } from '@react-three/drei';
-import { LavaPlane } from '../lavaPlane';
+import { Light } from '../../components/light';
+import { Particles } from '../../components/particles';
+import { Sparks } from '../../components/sparks';
+import { TextMesh } from '../../components/textMesh';
+import classes from './fuego.module.scss';
 
 const InteractiveText = () => {
   const [toggleVal, setToggleVal] = useState(0);
@@ -18,7 +16,6 @@ const InteractiveText = () => {
     [toggleVal]
   );
   const [hovered, setHover] = useState(false);
-  useEffect(() => void (document.body.style.cursor = hovered ? 'pointer' : 'auto'), [hovered]);
   // Events
   const handleClick = useCallback(() => setToggleVal(toggle => Number(!toggle)), [setToggleVal]);
   const handlePointerOver = useCallback(() => setHover(true), []);
@@ -29,6 +26,10 @@ const InteractiveText = () => {
 
   const animPosY = animValue.to([0, 1], [initY, 1]);
   const animColor = animValue.to([0, 1], ['#FAC000', '#D73502']);
+
+  useEffect(() => {
+    document.body.style.cursor = hovered ? 'pointer' : 'auto';
+  }, [hovered]);
 
   return (
     <group>
@@ -53,7 +54,7 @@ const InteractiveText = () => {
   );
 };
 
-export const Scene = () => {
+const Fuego = () => {
   const mouse = useRef<[number, number]>([0, 0]);
   return (
     <Canvas
@@ -67,10 +68,15 @@ export const Scene = () => {
       <Effects />
       <Light />
       <Particles count={1000} mouse={mouse} />
-      <Sparks count={15} mouse={mouse} colors={['#ea7434', '#f6a50b', '	red']} radius={3} />
+      <Sparks
+        count={20}
+        mouse={mouse}
+        colors={['#ea7434', '#f6a50b', '#A63923', '#BA2622', '#E38E35', '#F3D046']}
+        radius={3}
+      />
       <InteractiveText />
-      <OrbitControls />
-      <LavaPlane />
     </Canvas>
   );
 };
+
+export default Fuego;

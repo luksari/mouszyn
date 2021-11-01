@@ -28,7 +28,7 @@ type FatlineProps = {
   speed: number;
 };
 
-const r = () => Math.max(0.3, Math.random());
+const r = () => Math.max(0.1, Math.random());
 
 const Fatline = ({ curve, width, color, speed }: FatlineProps) => {
   const material = useRef<any>();
@@ -41,11 +41,11 @@ const Fatline = ({ curve, width, color, speed }: FatlineProps) => {
         attach="material"
         ref={material}
         transparent
-        depthTest={false}
+        depthTest={true}
         lineWidth={width}
         color={color}
         dashArray={0.1}
-        dashRatio={0.9}
+        dashRatio={0.95}
       />
     </mesh>
   );
@@ -55,15 +55,15 @@ export const Sparks = ({ count, mouse, colors, radius }: SparksProps) => {
   const lines = useMemo<Spark[]>(
     () =>
       Array.from({ length: count }).map((_, index) => {
-        const pos = new THREE.Vector3(Math.sin(0) * radius * r(), Math.cos(0) * radius * r(), 0);
-        const points = Array.from({ length: 30 }).map((_, index) => {
-          const angle = (index / count) * Math.PI;
-          return pos.add(new THREE.Vector3(Math.sin(angle) * radius * r(), Math.cos(angle) * radius * r(), 0)).clone();
+        const pos = new THREE.Vector3(Math.cos(0) * radius * r(), Math.sin(0) * radius * r(), r() * 2);
+        const points = Array.from({ length: 40 }).map((_, index) => {
+          const angle = (index / count) * Math.PI * 2;
+          return pos.add(new THREE.Vector3(Math.cos(angle) * radius * r(), Math.sin(angle) * radius * r(), 0)).clone();
         });
         const curve = new THREE.CatmullRomCurve3(points).getPoints(1000);
         return {
           color: colors[Math.floor(colors.length * Math.random())],
-          width: Math.max(0.01, (0.05 * index) / 10),
+          width: Math.max(0.01, (0.01 * index) / 100),
           speed: Math.max(0.001, 0.002 * Math.random()),
           curve,
         };
@@ -76,14 +76,14 @@ export const Sparks = ({ count, mouse, colors, radius }: SparksProps) => {
   const aspect = size.width / viewport.width;
   useFrame(() => {
     if (ref.current) {
-      ref.current.rotation.x = THREE.MathUtils.lerp(ref.current.rotation.x, 0 + mouse.current[1] / aspect / 200, 0.1);
-      ref.current.rotation.y = THREE.MathUtils.lerp(ref.current.rotation.y, 0 + mouse.current[0] / aspect / 400, 0.1);
+      ref.current.rotation.x = THREE.MathUtils.lerp(ref.current.rotation.x, 0 + mouse.current[1] / aspect / 400, 0.1);
+      ref.current.rotation.y = THREE.MathUtils.lerp(ref.current.rotation.y, 0 + mouse.current[0] / aspect / 200, 0.1);
     }
   });
 
   return (
     <group ref={ref}>
-      <group position={[-radius - 1, -radius, 4]} scale={[1.5, 0.9, 1]}>
+      <group position={[-radius, -radius + 1, 3.5]} scale={[1, 0.5, 1]}>
         {lines.map((props, index) => (
           <Fatline key={index} {...props} />
         ))}

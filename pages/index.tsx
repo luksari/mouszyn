@@ -1,11 +1,14 @@
-import classes from './index.module.scss';
-import { Scene } from '../components/scene';
-import { FC } from 'react';
+import Link from 'next/link';
+import classes from './home.module.scss';
 
-export const Home: FC = () => (
-  <div className={classes.wrapper}>
-    <Scene />
-  </div>
-);
+const Home = () => {
+  return (
+    <div className={classes.wrapper}>
+      <Link href="/fuego" passHref={true}>
+        <a className={classes.link}>Fuego</a>
+      </Link>
+    </div>
+  );
+};
 
 export default Home;
