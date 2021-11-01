@@ -5,7 +5,8 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { a, AnimatedProps } from '@react-spring/three';
 
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
-import { MeshWobbleMaterial } from '@react-three/drei';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { MeshWobbleMaterial as meshWobbleMaterial } from '@react-three/drei';
 
 extend({ TextGeometry });
 
@@ -52,7 +53,7 @@ export const TextMesh: FC<TextMeshProps> = ({
     <a.group {...groupProps} scale={[0.1 * size, 0.1 * size, 0.1]}>
       <a.mesh ref={mesh} castShadow receiveShadow scale={scale} material-color={color}>
         <textGeometry args={[children, config]} />
-        <MeshWobbleMaterial attach="material" metalness={0.3} roughness={1} speed={1.4} factor={0.2} />
+        <meshWobbleMaterial attach="material" metalness={0.3} roughness={1} speed={1.4} factor={0.2} />
       </a.mesh>
     </a.group>
   );
