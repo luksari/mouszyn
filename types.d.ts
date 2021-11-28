@@ -1,6 +1,5 @@
 import { MeshLine, MeshLineMaterial } from 'meshline';
 import * as React from 'react';
-import { MeshStandardMaterial } from 'three';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 declare global {
@@ -9,7 +8,6 @@ declare global {
       meshLine: React.DetailedHTMLProps<MeshLine>;
       unrealBloomPass: React.DetailedHTMLProps<UnrealBloomPass>;
       meshLineMaterial: React.DetailedHTMLProps<MeshLineMaterial>;
-      meshWobbleMaterial: React.DetailedHTMLFactory<MeshStandardMaterial>;
     }
   }
 }

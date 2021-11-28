@@ -1,12 +1,11 @@
 import { useLoader, extend, TextGeometryProps, GroupProps } from '@react-three/fiber';
-import { FC, useLayoutEffect, useMemo, useRef } from 'react';
+import { FC, useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { a, AnimatedProps } from '@react-spring/three';
 
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { MeshWobbleMaterial as meshWobbleMaterial } from '@react-three/drei';
+import { MeshWobbleMaterial } from '@react-three/drei';
 
 extend({ TextGeometry });
 
@@ -14,6 +13,7 @@ type TextMeshProps = TextGeometryProps &
   AnimatedProps<GroupProps> & {
     fontSize?: number;
     height?: number;
+    toggleValue: number;
   };
 
 export const TextMesh: FC<TextMeshProps> = ({
@@ -25,9 +25,11 @@ export const TextMesh: FC<TextMeshProps> = ({
   fontSize = 8,
   height = 6,
   scale,
+  toggleValue,
   ...groupProps
 }) => {
   const mesh = useRef(null);
+  const materialRef = useRef(null);
 
   // parse JSON file with Three
   const font = useLoader(FontLoader, '/vogue.json');
@@ -41,7 +43,7 @@ export const TextMesh: FC<TextMeshProps> = ({
     [font, fontSize, height]
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const size = new THREE.Vector3();
     mesh.current.geometry.computeBoundingBox();
     mesh.current.geometry.boundingBox.getSize(size);
@@ -49,11 +51,28 @@ export const TextMesh: FC<TextMeshProps> = ({
     mesh.current.position.y = vAlign === 'center' ? -size.y / 2 : vAlign === 'top' ? 0 : -size.y;
   }, [children, hAlign, vAlign]);
 
+  useEffect(() => {
+    if (toggleValue) {
+      materialRef.current.speed = 1.4;
+      materialRef.current.factor = 0.2;
+    } else {
+      materialRef.current.speed = 0;
+      materialRef.current.factor = 0;
+    }
+  }, [toggleValue]);
+
   return (
     <a.group {...groupProps} scale={[0.1 * size, 0.1 * size, 0.1]}>
       <a.mesh ref={mesh} castShadow receiveShadow scale={scale} material-color={color}>
         <textGeometry args={[children, config]} />
-        <meshWobbleMaterial attach="material" metalness={0.3} roughness={1} speed={1.4} factor={0.2} />
+        <MeshWobbleMaterial
+          ref={materialRef}
+          attach="material"
+          metalness={0.3}
+          roughness={1}
+          speed={1.4}
+          factor={0.2}
+        />
       </a.mesh>
     </a.group>
   );

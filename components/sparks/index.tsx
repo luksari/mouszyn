@@ -1,9 +1,10 @@
 import { useFrame, useThree, extend } from '@react-three/fiber';
-import { MutableRefObject, useMemo, useRef } from 'react';
+import { memo, MutableRefObject, useMemo, useRef } from 'react';
 import { Group, Vector3 } from 'three';
 import * as THREE from 'three';
 
 import { MeshLine, MeshLineMaterial } from 'meshline';
+import { a, useSpring } from '@react-spring/three';
 
 extend({ MeshLine, MeshLineMaterial });
 
@@ -14,25 +15,15 @@ type Spark = {
   curve: Vector3[];
 };
 
-type SparksProps = {
-  count: number;
-  mouse: MutableRefObject<[number, number]>;
-  colors: string[];
-  radius: number;
-};
+type FatlineProps = Spark & { toggleValue: number };
 
-type FatlineProps = {
-  curve: Vector3[];
-  width: number;
-  color: string;
-  speed: number;
-};
+const r = () => Math.max(0.5, Math.random());
 
-const r = () => Math.max(0.1, Math.random());
-
-const Fatline = ({ curve, width, color, speed }: FatlineProps) => {
+const Fatline = memo(({ curve, width, color, speed }: FatlineProps) => {
   const material = useRef<any>();
-  useFrame(() => (material.current.uniforms.dashOffset.value -= speed));
+  useFrame(() => {
+    material.current.uniforms.dashOffset.value -= speed;
+  });
 
   return (
     <mesh>
@@ -40,8 +31,8 @@ const Fatline = ({ curve, width, color, speed }: FatlineProps) => {
       <meshLineMaterial
         attach="material"
         ref={material}
-        transparent
         depthTest={true}
+        transparent={true}
         lineWidth={width}
         color={color}
         dashArray={0.1}
@@ -49,31 +40,47 @@ const Fatline = ({ curve, width, color, speed }: FatlineProps) => {
       />
     </mesh>
   );
+});
+
+type SparksProps = {
+  count: number;
+  mouse: MutableRefObject<[number, number]>;
+  colors: string[];
+  radius: number;
+  toggleValue: number;
 };
 
-export const Sparks = ({ count, mouse, colors, radius }: SparksProps) => {
+export const Sparks = memo(({ count, mouse, colors, radius, toggleValue }: SparksProps) => {
+  const ref = useRef<Group>();
+  const { viewport } = useThree();
+  const aspect = viewport.width / viewport.height;
+
+  const [{ animValue }] = useSpring(
+    { animValue: toggleValue, config: { mass: 0.5, tension: 8, friction: 1.5, precision: 0.0005 } },
+    [toggleValue]
+  );
+
   const lines = useMemo<Spark[]>(
     () =>
       Array.from({ length: count }).map((_, index) => {
-        const pos = new THREE.Vector3(Math.cos(0) * radius * r(), Math.sin(0) * radius * r(), r() * 2);
+        const pos = new THREE.Vector3(Math.sin(0) * radius * r(), Math.cos(0) * radius * r(), r() * 2);
         const points = Array.from({ length: 40 }).map((_, index) => {
           const angle = (index / count) * Math.PI * 2;
-          return pos.add(new THREE.Vector3(Math.cos(angle) * radius * r(), Math.sin(angle) * radius * r(), 0)).clone();
+          return pos.add(new THREE.Vector3(Math.sin(angle) * radius * r(), Math.cos(angle) * radius * r(), 0)).clone();
         });
         const curve = new THREE.CatmullRomCurve3(points).getPoints(1000);
         return {
           color: colors[Math.floor(colors.length * Math.random())],
           width: Math.max(0.01, (0.01 * index) / 100),
-          speed: Math.max(0.001, 0.002 * Math.random()),
+          speed: Math.max(0.001, 0.003 * Math.random()),
           curve,
         };
       }),
     [colors, count, radius]
   );
 
-  const ref = useRef<Group>();
-  const { size, viewport } = useThree();
-  const aspect = size.width / viewport.width;
+  const animScale = animValue.to([0, 1], [0, 1]);
+
   useFrame(() => {
     if (ref.current) {
       ref.current.rotation.x = THREE.MathUtils.lerp(ref.current.rotation.x, 0 + mouse.current[1] / aspect / 400, 0.1);
@@ -82,12 +89,12 @@ export const Sparks = ({ count, mouse, colors, radius }: SparksProps) => {
   });
 
   return (
-    <group ref={ref}>
-      <group position={[-radius, -radius + 1, 3.5]} scale={[1, 0.5, 1]}>
+    <a.group ref={ref} scale={animScale}>
+      <group position={[-radius * 2, -radius + 1, 3.5]} scale={[1, 0.5, 1]}>
         {lines.map((props, index) => (
-          <Fatline key={index} {...props} />
+          <Fatline key={index} {...props} toggleValue={toggleValue} />
         ))}
       </group>
-    </group>
+    </a.group>
   );
-};
+});
