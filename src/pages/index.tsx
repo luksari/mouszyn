@@ -1,30 +1,23 @@
 import dynamic from 'next/dynamic'
-// Step 5 - delete Instructions components
-import Instructions from '@/components/dom/Instructions'
-// import Shader from '@/components/canvas/Shader/Shader'
+import { R3FComponent } from '@/types'
+import Dom from '@/components/layout/dom'
 
-// Dynamic import is used to prevent a payload when the website start that will include threejs r3f etc..
-// WARNING ! errors might get obfuscated by using dynamic import.
-// If something goes wrong go back to a static import to show the error.
-// https://github.com/pmndrs/react-three-next/issues/49
-const Shader = dynamic(() => import('@/components/canvas/Shader/Shader'), {
+const Shader = dynamic(() => import('@/components/canvas/shader/Shader'), {
   ssr: false,
 })
 
-// dom components goes here
-const DOM = () => {
-  return (
-    // Step 5 - delete Instructions components
-    <Instructions />
-  )
-}
-
-// canvas components goes here
-const R3F = () => {
+const R3F: R3FComponent = () => {
   return (
     <>
       <Shader />
     </>
+  )
+}
+const DOM = () => {
+  return (
+    <Dom>
+      <h1>Hello</h1>
+    </Dom>
   )
 }
 

@@ -9,7 +9,7 @@ const BoxComponent = ({ route }) => {
   // Set up state for the hovered and active state
   const [hovered, setHover] = useState(false)
   // Subscribe this component to the render-loop, rotate the mesh every frame
-  useFrame((state, delta) =>
+  useFrame(() =>
     mesh.current
       ? (mesh.current.rotation.y = mesh.current.rotation.x += 0.01)
       : null

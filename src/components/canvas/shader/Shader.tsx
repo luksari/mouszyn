@@ -17,8 +17,6 @@ const ColorShiftMaterial = shaderMaterial(
   fragment
 )
 
-// This is the 🔑 that HMR will renew if this file is edited
-// It works for THREE.ShaderMaterial as well as for drei/shaderMaterial
 // @ts-ignore
 ColorShiftMaterial.key = guid.generate()
 
@@ -46,13 +44,13 @@ const Shader = (props) => {
       onClick={() => {
         router.push(`/box`)
       }}
-      onPointerOver={(e) => setHover(true)}
-      onPointerOut={(e) => setHover(false)}
+      onPointerOver={() => setHover(true)}
+      onPointerOut={() => setHover(false)}
       {...props}
     >
       <boxBufferGeometry args={[1, 1, 1]} />
       {/* @ts-ignore */}
-      <colorShiftMaterial key={ColorShiftMaterial} time={3} />
+      <colorShiftMaterial key={ColorShiftMaterial.name} time={3} />
     </mesh>
   )
 }

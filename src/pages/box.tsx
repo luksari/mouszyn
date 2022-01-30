@@ -1,22 +1,24 @@
-import Instructions from '@/components/dom/Instructions'
 import dynamic from 'next/dynamic'
+import { R3FComponent } from '@/types'
+import Dom from '@/components/layout/dom'
 
-const Box = dynamic(() => import('@/components/canvas/Box'), {
+const Box = dynamic(() => import('@/components/canvas/box/Box'), {
   ssr: false,
 })
 
-const DOM = () => {
-  return (
-    // Step 5 - delete Instructions components
-    <Instructions />
-  )
-}
-
-const R3F = () => {
+const R3F: R3FComponent = () => {
   return (
     <>
       <Box route='/' />
     </>
+  )
+}
+
+const DOM = () => {
+  return (
+    <Dom>
+      <div>Hello</div>
+    </Dom>
   )
 }
 
