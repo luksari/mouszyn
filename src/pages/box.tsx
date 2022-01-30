@@ -24,7 +24,6 @@ const Page = () => {
   return (
     <>
       <DOM />
-      {/* @ts-ignore */}
       <R3F r3f />
     </>
   )
@@ -35,7 +34,7 @@ export default Page
 export async function getStaticProps() {
   return {
     props: {
-      title: 'Box',
+      title: 'Fuego',
     },
   }
 }

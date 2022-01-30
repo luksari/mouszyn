@@ -52,7 +52,7 @@ const Shader = (props) => {
     >
       <boxBufferGeometry args={[1, 1, 1]} />
       {/* @ts-ignore */}
-      <colorShiftMaterial key={ColorShiftMaterial.key} time={3} />
+      <colorShiftMaterial key={ColorShiftMaterial} time={3} />
     </mesh>
   )
 }
